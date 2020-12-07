@@ -23,10 +23,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ContactClickListener  {
     private var mDatabase: SqliteDatabase? = null
     private var allContacts: ArrayList<Contacts> = ArrayList()
     private var mAdapter: ContactAdapter? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -35,11 +36,13 @@ class MainActivity : AppCompatActivity() {
         val linearLayoutManager = LinearLayoutManager(this)
         contactView.layoutManager = linearLayoutManager
         contactView.setHasFixedSize(true)
+
         mDatabase = SqliteDatabase(this)
         allContacts = mDatabase!!.listContacts()
+
         if (allContacts.size > 0) {
             contactView.visibility = View.VISIBLE
-            mAdapter = ContactAdapter(this, allContacts)
+            mAdapter = ContactAdapter(this, allContacts, this)
             contactView.adapter = mAdapter
         } else {
             contactView.visibility = View.GONE
@@ -99,10 +102,12 @@ class MainActivity : AppCompatActivity() {
                             Toast.LENGTH_LONG
                     ).show()
                 } else {
-                    Toast.makeText(applicationContext, "Ok, we adding the contact.", Toast.LENGTH_SHORT).show()
 
                     // Change the app background color
                     subView.setBackgroundColor(Color.RED)
+
+                    Toast.makeText(applicationContext, "Ok, we adding the contact.", Toast.LENGTH_SHORT).show()
+
                 }
                 val newContact = Contacts(name, ph_no)
                 mDatabase!!.addContacts(newContact)
@@ -175,8 +180,14 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
     companion object {
         private val TAG = MainActivity::class.java.simpleName
+    }
+
+    override fun onContactsClickListener(contacts: Contacts) {
+        Toast.makeText(this,"name: ${contacts.name}   phone nomer: ${contacts.phno}", Toast.LENGTH_LONG).show()
+
     }
 
 }

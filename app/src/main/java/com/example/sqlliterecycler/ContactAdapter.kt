@@ -18,7 +18,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class ContactAdapter(context: Context, listContacts: ArrayList<Contacts>) :
+class ContactAdapter(context: Context, listContacts: ArrayList<Contacts>, private val contactClickListener: ContactClickListener) :
     RecyclerView.Adapter<ContactViewHolder>(), Filterable {
     private val context: Context
     private var listContacts: ArrayList<Contacts>
@@ -32,8 +32,14 @@ class ContactAdapter(context: Context, listContacts: ArrayList<Contacts>) :
 
     override fun onBindViewHolder(holder: ContactViewHolder, position: Int) {
         val contacts = listContacts[position]
+
+
+    holder.container.setOnClickListener {
+        contactClickListener.onContactsClickListener(contacts)
+    }
         holder.name.setText(contacts.name)
         holder.ph_no.setText(contacts.phno)
+
         holder.editContact.setOnClickListener(object : View.OnClickListener {
             override fun onClick(view: View?) {
                 editTaskDialog(contacts)
